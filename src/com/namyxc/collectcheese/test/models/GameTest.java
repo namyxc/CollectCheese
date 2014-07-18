@@ -1,5 +1,6 @@
 package com.namyxc.collectcheese.test.models;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Before;
@@ -27,5 +28,16 @@ public class GameTest {
 	@Test
 	public void hasDecks(){
 		assertNotNull(game.boardDeck);
+		assertNotNull(game.cardDeck);
+	}
+	
+	@Test
+	public void boardDeckIsEmpty(){
+		assertEquals(0, game.boardDeck.size());
+	}
+	
+	@Test
+	public void cardDeckIsFull(){
+		assertEquals(game.CARD_DECK_INITIAL_SIZE, game.cardDeck.size());
 	}
 }
