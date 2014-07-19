@@ -14,8 +14,8 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.namyxc.collectcheese.MainActivity"
-            android:label="@string/app_name" >
+            android:name="com.namyxc.collectcheese.activities.MainActivity"
+            android:label="@string/app_name" android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
