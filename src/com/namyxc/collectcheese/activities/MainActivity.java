@@ -4,11 +4,9 @@ import java.util.ArrayList;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.widget.ImageButton;
@@ -169,7 +167,8 @@ public class MainActivity extends Activity implements OnChangeListener{
 		for(int i = 0; i < Deck.BOARD_DECK_SIZE ; i++){
 			ImageButton boardImageButtonI = (ImageButton)findViewById(10 +  i);
 			boardImageButtonI.setEnabled(false);
-			boardImageButtonI.setActivated(false);
+			boardImageButtonI.setSelected(false);
+			boardImageButtonI.setPressed(false);
 		}
 		
 		if (game.hasSelection()){
