@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.namyxc.collectcheese.models.Card;
+import com.namyxc.collectcheese.models.Card.cardType;
 import com.namyxc.collectcheese.models.Deck;
 import com.namyxc.collectcheese.models.Game;
 
@@ -77,5 +78,21 @@ public class GameTest {
 		availablePlaces.add(0);
 		availablePlaces.add(2);
 		assertEquals(availablePlaces, game.AvailablePlacesOnBoard());
+	}
+	
+	@Test
+	public void removeCardOnScore(){
+		game.InitCardDeck();
+		game.SelectFromCardDeck(5); 
+		game.PlaySelectedCardSwappedAt(0);
+		game.SelectFromCardDeck(3);
+		game.PlaySelectedCardSwappedAt(0);
+		game.SelectFromCardDeck(2); 
+		game.PlaySelectedCardSwappedAt(0);
+		
+		assertEquals(1, game.player1.getPrivateDeck().size());
+		assertEquals(cardType.Player2, game.player1.getPrivateDeck().get(0).Upside());
+		
+		assertEquals(2, game.boardDeckSize());
 	}
 }

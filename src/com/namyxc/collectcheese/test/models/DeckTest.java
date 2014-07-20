@@ -9,11 +9,12 @@ import org.junit.Test;
 
 import com.namyxc.collectcheese.models.Card;
 import com.namyxc.collectcheese.models.Deck;
+import com.namyxc.collectcheese.models.Player;
 
 public class DeckTest {
 
 	Deck deck;
-	Object owner;
+	Player owner;
 	
 	@Before
 	  public void setup()  {

@@ -14,11 +14,10 @@ import com.namyxc.collectcheese.models.Scorer;
 
 public class ScoreTest {
 	Scorer scorer;
-	Player Player1 = new Player(cardType.Player1);
 	
 	@Before
 	  public void setup()  {
-		scorer = new Scorer(Player1);
+		scorer = new Scorer(cardType.Player1, cardType.Player2);
 	  }
 	
 	@Test
@@ -97,6 +96,18 @@ public class ScoreTest {
 		assertEquals(3,scorer.score(deck));
 	}
 	
+	@Test
+	public void ScoreTwice(){
+		Deck deck = new Deck();
+		Player Player1 = new Player(cardType.Player1, scorer);
+		deck.addCard(new Card(cardType.Player1, null));
+		deck.addCard(new Card(cardType.Reward, null));
+		deck.addCard(new Card(cardType.Player1, null));
+		assertEquals(2, scorer.score(deck));
+		Player1.addCurrectScore(deck);
+		assertEquals(2, Player1.Score());
+		
+	}
 	
 
 }
