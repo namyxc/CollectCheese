@@ -97,4 +97,8 @@ public class Deck extends SimpleObservable{
 		cards.set(selectedIndex, new Card(selectedCard.Downside(), selectedCard.Upside()));
 	}
 
+	public void addCard(Card card) {
+		cards.add(card);
+	}
+
 }
