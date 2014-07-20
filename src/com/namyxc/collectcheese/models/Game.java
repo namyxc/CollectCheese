@@ -2,19 +2,20 @@ package com.namyxc.collectcheese.models;
 
 import java.util.ArrayList;
 
+import com.namyxc.collectcheese.models.Card.cardType;
 import com.namyxc.collectcheese.vos.OnChangeListener;
 import com.namyxc.collectcheese.vos.SimpleObservable;
 
 public class Game extends SimpleObservable implements OnChangeListener{
 
-	public Object player1;
-	public Object player2;
+	public Player player1;
+	public Player player2;
 	private Deck boardDeck;
 	private Deck cardDeck;
 
 	public Game(){
-		player1 = new Object();
-		player2 = new Object();
+		player1 = new Player(cardType.Player1, new Scorer(cardType.Player1, cardType.Player2));
+		player2 = new Player(cardType.Player2, new Scorer(cardType.Player2, cardType.Player1));
 		boardDeck = new Deck();
 		cardDeck = new Deck(player1);
 		cardDeck.addListener(this);
@@ -27,7 +28,28 @@ public class Game extends SimpleObservable implements OnChangeListener{
 
 	private void PlaySelectedCardAt(int i, Card selectedCard) {
 		boardDeck.PlayCardAt(i, selectedCard);
+		cardDeck.owner().addCurrectScore(boardDeck);
+		cardDeck.owner().collectScoredCards(boardDeck);
+		boardDeck.removeCardsAt(cardDeck.owner().getScoredCardsIndex(boardDeck));
 		cardDeck.removeSelectedCard();
+		cardDeck.setOwner(cardDeck.owner() == player1 ? player2: player1);
+		cardDeck.Select(-1);
+		notifyObservers(this);
+	}
+	
+
+
+	private void PlaySelectedPrivateCardAt(int i, Card selectedCard) {
+		boardDeck.PlayCardAt(i, selectedCard);
+		
+		ArrayList<Integer> removeIndex = new ArrayList<Integer>();
+		if (cardDeckOwnerIsPlayer1()) {
+			removeIndex.add(player1.getPrivateDeck().SelectedIndex());
+			player1.getPrivateDeck().removeCardsAt(removeIndex);
+		}else{
+			removeIndex.add(player2.getPrivateDeck().SelectedIndex());
+			player2.getPrivateDeck().removeCardsAt(removeIndex);
+		}
 		cardDeck.setOwner(cardDeck.owner() == player1 ? player2: player1);
 		cardDeck.Select(-1);
 		notifyObservers(this);
@@ -83,5 +105,39 @@ public class Game extends SimpleObservable implements OnChangeListener{
 		Card selectedCard = cardDeck.SelectedCard();
 		PlaySelectedCardAt(index, selectedCard);
 		
+	}
+
+	public void SelectFromPrivateDeck(int i) {
+		if (cardDeckOwnerIsPlayer1()) {
+			player1.getPrivateDeck().Select(i);
+		}else{
+			player2.getPrivateDeck().Select(i);}
+	}
+
+	public void PlaySelectedPrivateCardAt(int i) {
+		Card selectedCard;
+		if (cardDeckOwnerIsPlayer1()) {
+			selectedCard = player1.getPrivateDeck().SelectedCard();
+		}else{
+			selectedCard = player2.getPrivateDeck().SelectedCard();
+		}		
+		PlaySelectedPrivateCardAt(i, selectedCard);
+	}
+
+	public void PlaySelectedPrivateCardSwappedAt(int i) {
+		Card selectedCard;
+		if (cardDeckOwnerIsPlayer1()) {
+			player1.getPrivateDeck().SwapSelectedCard();
+			selectedCard = player1.getPrivateDeck().SelectedCard();
+		}else{
+			player2.getPrivateDeck().SwapSelectedCard();
+			selectedCard = player2.getPrivateDeck().SelectedCard();
+		}
+		PlaySelectedPrivateCardAt(i, selectedCard);
+	}
+
+	public boolean cardDeckOwnerEmptyPrivateCard() {
+		if (cardDeckOwnerIsPlayer1())  return player1.getPrivateDeck().size() == 0;
+		else return player2.getPrivateDeck().size() == 0;
 	}
 }

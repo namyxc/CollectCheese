@@ -1,12 +1,16 @@
 package com.namyxc.collectcheese.models;
 
+import java.util.ArrayList;
+
 import com.namyxc.collectcheese.models.Card.cardType;
 
 public class Scorer {
-	Player owner;
-	
-	public Scorer(Player owner) {
-		this.owner = owner;
+	cardType ownerSymbol;
+	cardType enemySymbol;
+
+	public Scorer(cardType owner, cardType enemy) {
+		this.ownerSymbol = owner;
+		this.enemySymbol = enemy;
 	}
 
 	public int score(Deck deck) {
@@ -25,12 +29,12 @@ public class Scorer {
 
 		if (
 				deck.get(0).Upside() == cardType.Enemy
-				&& deck.get(1).Upside() == owner.EnemySymbol
+				&& deck.get(1).Upside() == enemySymbol
 				&& deck.get(2).Upside() == cardType.Enemy) return 1;
 		if (
-				deck.get(0).Upside() == owner.Symbol
+				deck.get(0).Upside() == ownerSymbol
 				&& deck.get(1).Upside() == cardType.Reward
-				&& deck.get(2).Upside() == owner.Symbol) return 2;
+				&& deck.get(2).Upside() == ownerSymbol) return 2;
 		if (
 				deck.get(0).Upside() == cardType.Reward
 				&& deck.get(1).Upside() == cardType.Reward
@@ -38,9 +42,17 @@ public class Scorer {
 		return 0;
 	}
 
-	public Object owner() {
-		// TODO Auto-generated method stub
-		return null;
+	public ArrayList<Integer> getScoredCards(Deck boardDeck) {
+		ArrayList<Integer> scoredCardIndex = new ArrayList<Integer>();
+		for (int i = 0; i < boardDeck.size()-2; i++){
+			Deck threeCard = new Deck();
+			threeCard.addCard(boardDeck.get(i));
+			threeCard.addCard(boardDeck.get(i+1));
+			threeCard.addCard(boardDeck.get(i+2));
+			if (scoreThreeCard(threeCard) > 0)
+				scoredCardIndex.add(i+1);
+		}
+		return scoredCardIndex;
 	}
 
 }

@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.namyxc.collectcheese.R;
 import com.namyxc.collectcheese.models.Deck;
@@ -24,8 +24,10 @@ public class MainActivity extends Activity implements OnChangeListener{
 	public Game game;
 
 	private LinearLayout player1Deck;
+	private TextView Player1Score;
 	private LinearLayout boardDeck;
 	private LinearLayout player2Deck;
+	private TextView Player2Score;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +42,17 @@ public class MainActivity extends Activity implements OnChangeListener{
 		game.addListener(this);
 		
 		createDeckImageButtons();
+		
+
+		UpdateScore();
+	}
+
+	private void UpdateScore() {
+		Player1Score = (TextView)findViewById(R.id.Player1Score);
+		Player2Score = (TextView)findViewById(R.id.Player2Score);
+		
+		Player1Score.setText(String.valueOf(game.player1.Score()));
+		Player2Score.setText(String.valueOf(game.player2.Score()));
 	}
 
 	private void createDeckImageButtons() {
@@ -79,14 +92,20 @@ public class MainActivity extends Activity implements OnChangeListener{
 				public void onClick(View v) {
 
 					int index = v.getId() - 10;
-					game.PlaySelectedCardAt(index);
+					if (game.cardDeckOwnerEmptyPrivateCard())
+						game.PlaySelectedCardAt(index);
+					else
+						game.PlaySelectedPrivateCardAt(index);
 				}
 			});
 			boardImageButton.setOnLongClickListener(new OnLongClickListener() {
 				
 				public boolean onLongClick(View v) {
 					int index = v.getId() - 10;
-					game.PlaySelectedCardSwappedAt(index);
+					if (game.cardDeckOwnerEmptyPrivateCard())
+						game.PlaySelectedCardSwappedAt(index);
+					else
+						game.PlaySelectedPrivateCardSwappedAt(index);
 					return true;
 				}
 			});
@@ -132,26 +151,69 @@ public class MainActivity extends Activity implements OnChangeListener{
 		int selectedIndex = game.SelectedDeckCard();
 		for(int i = 0; i < Deck.CARD_DECK_INITIAL_SIZE; i++){
 			ImageButton Player1ImageButtonI = (ImageButton)findViewById(i);
+			if (game.cardDeckOwnerIsPlayer1()){
+				if (game.player1.getPrivateDeck().size() > 0 && i < game.player1.getPrivateDeck().size()){
+					Player1ImageButtonI.setImageResource(game.player1.getPrivateDeck().get(i).UpsideImage());
+					Player1ImageButtonI.setVisibility(View.VISIBLE);
+					Player1ImageButtonI.setEnabled(true);
+				}
+				else if (game.player1.getPrivateDeck().size() > 0){
+					Player1ImageButtonI.setVisibility(View.INVISIBLE);
+					Player1ImageButtonI.setEnabled(false);
+				}
+				else{
 
-			if (i < game.cardDeckSize()){
-				Player1ImageButtonI.setImageResource(game.getCardDeckAt(i).UpsideImage());
-				Player1ImageButtonI.setVisibility(game.cardDeckOwnerIsPlayer1() ? View.VISIBLE : View.INVISIBLE);
+					
+					if (i < game.cardDeckSize()){
+						Player1ImageButtonI.setImageResource(game.getCardDeckAt(i).UpsideImage());
+						Player1ImageButtonI.setVisibility(game.cardDeckOwnerIsPlayer1() ? View.VISIBLE : View.INVISIBLE);
+					}else{
+						Player1ImageButtonI.setVisibility(View.INVISIBLE);
+					}
+					Player1ImageButtonI.setEnabled(game.cardDeckOwnerIsPlayer1() && i != selectedIndex);
+				}
+				
 			}else{
 				Player1ImageButtonI.setVisibility(View.INVISIBLE);
+				Player1ImageButtonI.setEnabled(false);
 			}
-			
-			Player1ImageButtonI.setEnabled(game.cardDeckOwnerIsPlayer1() && i != selectedIndex);
 		}
 
 		for(int i = 0; i < Deck.CARD_DECK_INITIAL_SIZE; i++){
 			ImageButton Player2ImageButtonI = (ImageButton)findViewById(20 + i);
-			Player2ImageButtonI.setEnabled(!game.cardDeckOwnerIsPlayer1() && i != selectedIndex);
+			if (!game.cardDeckOwnerIsPlayer1()){
+				if (game.player2.getPrivateDeck().size() > 0 && i < game.player2.getPrivateDeck().size()){
+					Player2ImageButtonI.setImageResource(game.player2.getPrivateDeck().get(i).UpsideImage());
+					Player2ImageButtonI.setVisibility(View.VISIBLE);
+					Player2ImageButtonI.setEnabled(true);
+				}
+				else if (game.player2.getPrivateDeck().size() > 0){
+					Player2ImageButtonI.setVisibility(View.INVISIBLE);
+					Player2ImageButtonI.setEnabled(false);
+				}
+				else{
+
+					
+					if (i < game.cardDeckSize()){
+						Player2ImageButtonI.setImageResource(game.getCardDeckAt(i).UpsideImage());
+						Player2ImageButtonI.setVisibility(!game.cardDeckOwnerIsPlayer1() ? View.VISIBLE : View.INVISIBLE);
+					}else{
+						Player2ImageButtonI.setVisibility(View.INVISIBLE);
+					}
+					Player2ImageButtonI.setEnabled(!game.cardDeckOwnerIsPlayer1() && i != selectedIndex);
+				}
+				
+			}else{
+				Player2ImageButtonI.setVisibility(View.INVISIBLE);
+				Player2ImageButtonI.setEnabled(false);
+			}
+			/*Player2ImageButtonI.setEnabled(!game.cardDeckOwnerIsPlayer1() && i != selectedIndex);
 			if (i < game.cardDeckSize()){
 				Player2ImageButtonI.setImageResource(game.getCardDeckAt(i).UpsideImage());
 				Player2ImageButtonI.setVisibility(game.cardDeckOwnerIsPlayer1() ? View.INVISIBLE : View.VISIBLE);
 			}else{
 				Player2ImageButtonI.setVisibility(View.INVISIBLE);
-			}
+			}*/
 		}
 		
 		int modifier = game.hasSelection() ? 1 : 0;
@@ -181,6 +243,8 @@ public class MainActivity extends Activity implements OnChangeListener{
 			boardImageButtonI.setImageResource(R.drawable.question);
 		}
 		}
+
+		UpdateScore();
 	}
 
 }

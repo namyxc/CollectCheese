@@ -9,10 +9,10 @@ public class Deck extends SimpleObservable{
 	public static final int CARD_DECK_INITIAL_SIZE = 6;
 	public static final int BOARD_DECK_SIZE = 8;
 	private ArrayList<Card> cards; 
-	private Object owner;
+	private Player owner;
 	private int selectedIndex;
 
-	public Deck(Object owner) {
+	public Deck(Player owner) {
 		InitCards();
 		this.owner = owner;
 	}
@@ -25,7 +25,7 @@ public class Deck extends SimpleObservable{
 		return cards.size();
 	}
 
-	public Object owner() {
+	public Player owner() {
 		return owner;
 	}
 
@@ -72,10 +72,6 @@ public class Deck extends SimpleObservable{
 		int sizeOfCards = cards.size();
 		if ((index == 0 && sizeOfCards == 0) || index == sizeOfCards+1) cards.add(selectedCard);
 		else {
-			/*cards.add(selectedCard);
-			for (int i = sizeOfCards; i >0; i-- ){
-				cards.set(i, cards.get(i-1));
-			}*/
 			cards.add(0, selectedCard);
 		};
 	}
@@ -88,7 +84,7 @@ public class Deck extends SimpleObservable{
 		return selectedIndex;
 	}
 
-	public void setOwner(Object owner) {
+	public void setOwner(Player owner) {
 		this.owner = owner;
 	}
 
@@ -99,6 +95,13 @@ public class Deck extends SimpleObservable{
 
 	public void addCard(Card card) {
 		cards.add(card);
+	}
+
+	public void removeCardsAt(ArrayList<Integer> scoredCardsIndex) {
+		for (int i = scoredCardsIndex.size()-1; i >= 0; i--){
+			int index = scoredCardsIndex.get(i);
+			cards.remove(index);
+		}
 	}
 
 }
