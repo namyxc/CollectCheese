@@ -104,4 +104,28 @@ public class Deck extends SimpleObservable{
 		}
 	}
 
+	public ArrayList<Integer> AvailablePlacesFromBoard() {
+		ArrayList<Integer> availablePlaces = new ArrayList<Integer>();
+		if (selectedIndex == cards.size()-1) {
+			availablePlaces.add(0);
+			availablePlaces.add(cards.size()-2);
+			availablePlaces.add(cards.size()-1);
+		}
+		else if (selectedIndex == 0){
+			availablePlaces.add(0);
+			availablePlaces.add(1);
+			availablePlaces.add(cards.size()-1);
+		}else{
+			availablePlaces.add(SelectedIndex()-1);
+			availablePlaces.add(SelectedIndex());
+			availablePlaces.add(SelectedIndex()+1);
+			
+		}
+		return availablePlaces;
+	}
+
+	public void ClearSelection() {
+		selectedIndex = -1;
+	}
+
 }

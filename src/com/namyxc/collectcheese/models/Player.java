@@ -13,6 +13,10 @@ public class Player {
 		return privateDeck;
 	}
 	
+	public boolean hasCardInPrivateDeckAt(int index){
+		return privateDeck.size() > index;
+	}
+	
 	public ArrayList<Integer> getScoredCardsIndex(Deck boardDeck){
 		return scorer.getScoredCards(boardDeck);
 	}
@@ -37,6 +41,10 @@ public class Player {
 		for (int i = 0; i < scoredCardsIndex.size(); i++){
 			privateDeck.addCard(boardDeck.get(scoredCardsIndex.get(i)));
 		}
+	}
+
+	public boolean hasPrivateDeck() {
+		return privateDeck.size() > 0;
 	}
 
 }

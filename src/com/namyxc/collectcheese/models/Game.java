@@ -8,6 +8,7 @@ import com.namyxc.collectcheese.vos.SimpleObservable;
 
 public class Game extends SimpleObservable implements OnChangeListener{
 
+	
 	public Player player1;
 	public Player player2;
 	private Deck boardDeck;
@@ -34,6 +35,8 @@ public class Game extends SimpleObservable implements OnChangeListener{
 		cardDeck.removeSelectedCard();
 		cardDeck.setOwner(cardDeck.owner() == player1 ? player2: player1);
 		cardDeck.Select(-1);
+		boardDeck.ClearSelection();
+		//if (cardDeckSize() == 0 && !cardDeck.owner().hasPrivateDeck()) currentPhase = gamePhase.PLAY_FROM_BOARD;
 		notifyObservers(this);
 	}
 	
@@ -104,7 +107,6 @@ public class Game extends SimpleObservable implements OnChangeListener{
 		cardDeck.SwapSelectedCard();
 		Card selectedCard = cardDeck.SelectedCard();
 		PlaySelectedCardAt(index, selectedCard);
-		
 	}
 
 	public void SelectFromPrivateDeck(int i) {
@@ -139,5 +141,18 @@ public class Game extends SimpleObservable implements OnChangeListener{
 	public boolean cardDeckOwnerEmptyPrivateCard() {
 		if (cardDeckOwnerIsPlayer1())  return player1.getPrivateDeck().size() == 0;
 		else return player2.getPrivateDeck().size() == 0;
+	}
+
+	public void selectFromBoard(int i) {
+		boardDeck.Select(i);
+		notifyObservers(this);
+	}
+
+	public ArrayList<Integer> AvailablePlacesOnBoardFromBoard() {
+		return boardDeck.AvailablePlacesFromBoard();
+	}
+
+	public boolean boardDeckHasSelection() {
+		return boardDeck.hasSelection();
 	}
 }
