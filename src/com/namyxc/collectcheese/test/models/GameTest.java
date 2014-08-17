@@ -3,6 +3,7 @@ package com.namyxc.collectcheese.test.models;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.ArrayList;
 
@@ -94,5 +95,65 @@ public class GameTest {
 		assertEquals(cardType.Player2, game.player1.getPrivateDeck().get(0).Upside());
 		
 		assertEquals(2, game.boardDeckSize());
+	}
+	
+	@Test
+	public void selectFromBoard1(){
+		game.InitCardDeck();
+		playAllCardFromDeck();
+		assertTrue(game.cardDeckOwnerIsPlayer1());
+		assertEquals(0, game.cardDeckSize());
+		
+		game.selectFromBoard(1);
+		
+		ArrayList<Integer> availablePlaces = new ArrayList<Integer>();
+		availablePlaces.add(0);
+		availablePlaces.add(1);
+		availablePlaces.add(2);
+		assertEquals(availablePlaces, game.AvailablePlacesOnBoardFromBoard());
+	}
+	
+	@Test
+	public void selectFromBoard0(){
+		game.InitCardDeck();
+		playAllCardFromDeck();
+
+		game.selectFromBoard(0);
+		
+		ArrayList<Integer> availablePlaces = new ArrayList<Integer>();
+		availablePlaces.add(0);
+		availablePlaces.add(1);
+		availablePlaces.add(Deck.CARD_DECK_INITIAL_SIZE-1);
+		assertEquals(Deck.CARD_DECK_INITIAL_SIZE, game.boardDeckSize());
+		assertEquals(availablePlaces, game.AvailablePlacesOnBoardFromBoard());
+	}
+	
+	@Test
+	public void selectFromBoard5(){
+		game.InitCardDeck();
+		playAllCardFromDeck();
+
+		game.selectFromBoard(5);
+		
+		ArrayList<Integer> availablePlaces = new ArrayList<Integer>();
+		availablePlaces.add(0);
+		availablePlaces.add(Deck.CARD_DECK_INITIAL_SIZE-2);
+		availablePlaces.add(Deck.CARD_DECK_INITIAL_SIZE-1);
+		assertEquals(availablePlaces, game.AvailablePlacesOnBoardFromBoard());
+	}
+
+	private void playAllCardFromDeck() {
+		game.SelectFromCardDeck(0); 
+		game.PlaySelectedCardAt(0);
+		game.SelectFromCardDeck(0); 
+		game.PlaySelectedCardAt(0);
+		game.SelectFromCardDeck(0); 
+		game.PlaySelectedCardSwappedAt(0);
+		game.SelectFromCardDeck(0); 
+		game.PlaySelectedCardAt(0);
+		game.SelectFromCardDeck(0); 
+		game.PlaySelectedCardAt(0);
+		game.SelectFromCardDeck(0); 
+		game.PlaySelectedCardSwappedAt(0);
 	}
 }
