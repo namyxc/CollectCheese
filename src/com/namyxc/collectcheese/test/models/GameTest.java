@@ -129,6 +129,22 @@ public class GameTest {
 	}
 	
 	@Test
+	public void selectFromBoard0AndFlipIt(){
+
+		int SELECTED_INDEX = 3;
+		game.InitCardDeck();
+		playAllCardFromDeck();
+		cardType downSide = game.getBoardDeckAt(SELECTED_INDEX).Downside();
+
+		game.selectFromBoard(SELECTED_INDEX);
+		game.flipSelectedBoardCard();
+		
+		assertEquals(downSide, game.getBoardDeckAt(SELECTED_INDEX).Upside());
+		assertFalse(game.boardDeckHasSelection());
+		assertFalse(game.cardDeckOwnerIsPlayer1());
+	}
+	
+	@Test
 	public void selectFromBoard5(){
 		game.InitCardDeck();
 		playAllCardFromDeck();

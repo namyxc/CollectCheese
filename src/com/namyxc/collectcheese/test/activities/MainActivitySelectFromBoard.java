@@ -30,7 +30,8 @@ public class MainActivitySelectFromBoard {
 
 	@Test
 	public void SelectFroamBoardTest(){
-		
+
+		int SELECTED_INDEX = 3;
 		// R  R  R P1 P1 P2
 		// P1 P2 E P2 E  E
 		activity.game.SelectFromCardDeck(0); 
@@ -54,21 +55,25 @@ public class MainActivitySelectFromBoard {
 			
 			
 		}
-
-		activity.game.selectFromBoard(0); 
+		ImageButton boardSelectedImageButton = (ImageButton)activity.findViewById(10 + SELECTED_INDEX);
+		boardSelectedImageButton.performClick();
+		activity.game.selectFromBoard(SELECTED_INDEX); 
 		assertTrue(activity.game.boardDeckHasSelection());
 		for(int i = 0; i < Deck.CARD_DECK_INITIAL_SIZE; i++){
 			ImageButton boardImageButton = (ImageButton)activity.findViewById(10 + i);
-			if (i == 0 || i == 1 || i == Deck.CARD_DECK_INITIAL_SIZE-1){
-				assertTrue(boardImageButton.isEnabled());
-			}else{
-				assertFalse(boardImageButton.isEnabled());
-			}
-			assertEquals(View.VISIBLE, boardImageButton.getVisibility());
-			
-			
+			assertTrue(boardImageButton.isEnabled());
+			assertEquals(View.VISIBLE, boardImageButton.getVisibility());			
 		}
 		
+		boardSelectedImageButton = (ImageButton)activity.findViewById(10 + SELECTED_INDEX);
+		ShadowImageView shadow_boardSelectedImageButton = Robolectric.shadowOf_(boardSelectedImageButton);
+		assertEquals(shadow_boardSelectedImageButton.getImageResourceId(), activity.game.getBoardDeckAt(SELECTED_INDEX).flipableUpsideImage());
+		int downside = activity.game.getBoardDeckAt(SELECTED_INDEX).DownsideImage();
+		
+		boardSelectedImageButton.performClick();
+		boardSelectedImageButton = (ImageButton)activity.findViewById(10 + SELECTED_INDEX);
+		shadow_boardSelectedImageButton = Robolectric.shadowOf_(boardSelectedImageButton);
+		assertEquals(downside, shadow_boardSelectedImageButton.getImageResourceId());
 	}
 
 
