@@ -235,21 +235,13 @@ public class MainActivity extends Activity implements OnChangeListener {
 				showImageButton(boardImageButtonI, R.drawable.question);
 			}
 		} else if ((game.cardDeckSize() == 0) && game.boardDeckHasSelection()) {
-			/*ArrayList<Integer> AvailablePlaces = game
-					.AvailablePlacesOnBoardFromBoard();
-			for (int i = 0; i < AvailablePlaces.size(); i++) {
-				ImageButton boardImageButtonI = (ImageButton) findViewById(10 + AvailablePlaces
-						.get(i));
-				boardImageButtonI.setEnabled(true);
-
-			}*/
 			for (int i = 0; i < game.boardDeckSize(); i++) {
 				ImageButton boardImageButtonI = (ImageButton) findViewById(10 + i);
 				boardImageButtonI.setEnabled(true);
 			}
 			ImageButton selectedboardImageButtonI = (ImageButton) findViewById(10 + game.boardDeckSelectedIndex());
 			showImageButton(selectedboardImageButtonI, game.boardDeckSelectedUpsideImage());
-		} else if (game.cardDeckSize() == 0) {
+		} else if (game.cardDeckSize() == 0 && game.cardDeckOwnerEmptyPrivateCard()) {
 
 			for (int i = 0; i < game.boardDeckSize(); i++) {
 				ImageButton boardImageButtonI = (ImageButton) findViewById(10 + i);

@@ -166,6 +166,7 @@ public class Game extends SimpleObservable implements OnChangeListener{
 
 		cardDeck.owner().addCurrectScore(boardDeck);
 		cardDeck.owner().collectScoredCards(boardDeck);
+		boardDeck.removeCardsAt(cardDeck.owner().getScoredCardsIndex(boardDeck));
 		
 		SwapCardDeck();
 		
