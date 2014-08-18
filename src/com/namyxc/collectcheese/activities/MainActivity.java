@@ -100,7 +100,9 @@ public class MainActivity extends Activity implements OnChangeListener {
 							game.PlaySelectedCardAt(index);
 						else
 							game.PlaySelectedPrivateCardAt(index);
-					} else {
+					} else if (game.boardDeckHasSelection() && game.boardDeckSelectedIndex() == index){
+						game.flipSelectedBoardCard();
+					}else{
 						game.selectFromBoard(index);
 					}
 				}
@@ -233,14 +235,20 @@ public class MainActivity extends Activity implements OnChangeListener {
 				showImageButton(boardImageButtonI, R.drawable.question);
 			}
 		} else if ((game.cardDeckSize() == 0) && game.boardDeckHasSelection()) {
-			ArrayList<Integer> AvailablePlaces = game
+			/*ArrayList<Integer> AvailablePlaces = game
 					.AvailablePlacesOnBoardFromBoard();
 			for (int i = 0; i < AvailablePlaces.size(); i++) {
 				ImageButton boardImageButtonI = (ImageButton) findViewById(10 + AvailablePlaces
 						.get(i));
 				boardImageButtonI.setEnabled(true);
 
+			}*/
+			for (int i = 0; i < game.boardDeckSize(); i++) {
+				ImageButton boardImageButtonI = (ImageButton) findViewById(10 + i);
+				boardImageButtonI.setEnabled(true);
 			}
+			ImageButton selectedboardImageButtonI = (ImageButton) findViewById(10 + game.boardDeckSelectedIndex());
+			showImageButton(selectedboardImageButtonI, game.boardDeckSelectedUpsideImage());
 		} else if (game.cardDeckSize() == 0) {
 
 			for (int i = 0; i < game.boardDeckSize(); i++) {

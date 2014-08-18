@@ -33,11 +33,15 @@ public class Game extends SimpleObservable implements OnChangeListener{
 		cardDeck.owner().collectScoredCards(boardDeck);
 		boardDeck.removeCardsAt(cardDeck.owner().getScoredCardsIndex(boardDeck));
 		cardDeck.removeSelectedCard();
-		cardDeck.setOwner(cardDeck.owner() == player1 ? player2: player1);
-		cardDeck.Select(-1);
+		SwapCardDeck();
+		cardDeck.ClearSelection();
 		boardDeck.ClearSelection();
 		//if (cardDeckSize() == 0 && !cardDeck.owner().hasPrivateDeck()) currentPhase = gamePhase.PLAY_FROM_BOARD;
 		notifyObservers(this);
+	}
+
+	private void SwapCardDeck() {
+		cardDeck.setOwner(cardDeck.owner() == player1 ? player2: player1);
 	}
 	
 
@@ -53,7 +57,7 @@ public class Game extends SimpleObservable implements OnChangeListener{
 			removeIndex.add(player2.getPrivateDeck().SelectedIndex());
 			player2.getPrivateDeck().removeCardsAt(removeIndex);
 		}
-		cardDeck.setOwner(cardDeck.owner() == player1 ? player2: player1);
+		SwapCardDeck();
 		cardDeck.Select(-1);
 		notifyObservers(this);
 	}
@@ -154,5 +158,25 @@ public class Game extends SimpleObservable implements OnChangeListener{
 
 	public boolean boardDeckHasSelection() {
 		return boardDeck.hasSelection();
+	}
+
+	public void flipSelectedBoardCard() {
+		boardDeck.SwapSelectedCard();
+		boardDeck.ClearSelection();
+
+		cardDeck.owner().addCurrectScore(boardDeck);
+		cardDeck.owner().collectScoredCards(boardDeck);
+		
+		SwapCardDeck();
+		
+		notifyObservers(this);
+	}
+
+	public int boardDeckSelectedIndex() {
+		return boardDeck.SelectedIndex();
+	}
+
+	public int boardDeckSelectedUpsideImage() {
+		return boardDeck.SelectedCard().flipableUpsideImage();
 	}
 }
