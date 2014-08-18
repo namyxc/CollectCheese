@@ -32,20 +32,7 @@ public class MainActivitySelectFromBoard {
 	public void SelectFroamBoardTest(){
 
 		int SELECTED_INDEX = 3;
-		// R  R  R P1 P1 P2
-		// P1 P2 E P2 E  E
-		activity.game.SelectFromCardDeck(0); 
-		activity.game.PlaySelectedCardAt(0);
-		activity.game.SelectFromCardDeck(0);
-		activity.game.PlaySelectedCardAt(0);
-		activity.game.SelectFromCardDeck(0); 
-		activity.game.PlaySelectedCardSwappedAt(0);
-		activity.game.SelectFromCardDeck(0); 
-		activity.game.PlaySelectedCardAt(0);
-		activity.game.SelectFromCardDeck(0);
-		activity.game.PlaySelectedCardAt(0);
-		activity.game.SelectFromCardDeck(0); 
-		activity.game.PlaySelectedCardSwappedAt(0);
+		playAllCards();
 		
 		assertFalse(activity.game.boardDeckHasSelection());
 		for(int i = 0; i < Deck.CARD_DECK_INITIAL_SIZE; i++){
@@ -71,9 +58,41 @@ public class MainActivitySelectFromBoard {
 		int downside = activity.game.getBoardDeckAt(SELECTED_INDEX).DownsideImage();
 		
 		boardSelectedImageButton.performClick();
-		boardSelectedImageButton = (ImageButton)activity.findViewById(10 + SELECTED_INDEX);
-		shadow_boardSelectedImageButton = Robolectric.shadowOf_(boardSelectedImageButton);
-		assertEquals(downside, shadow_boardSelectedImageButton.getImageResourceId());
+		
+		for(int i = 0; i < Deck.CARD_DECK_INITIAL_SIZE-1; i++){
+			ImageButton boardImageButton = (ImageButton)activity.findViewById(10 + i);
+			assertTrue(boardImageButton.isEnabled());
+			assertEquals(View.VISIBLE, boardImageButton.getVisibility());			
+		}
+		ImageButton lastButton = (ImageButton)activity.findViewById(10 + Deck.CARD_DECK_INITIAL_SIZE-1);
+		assertEquals(View.INVISIBLE, lastButton.getVisibility());
+		
+		ImageButton firstButton = (ImageButton)activity.findViewById(10 + 0);
+		firstButton.performClick();
+		firstButton.performClick();
+		
+		for(int i = 0; i < Deck.CARD_DECK_INITIAL_SIZE-1; i++){
+			ImageButton boardImageButton = (ImageButton)activity.findViewById(10 + i);
+			assertFalse(boardImageButton.isEnabled());			
+		}
+	}
+
+	private void playAllCards() {
+		// R  R  R P1 P1 P2
+		// P1 P2 E P2 E  E
+		activity.game.InitCardDeck();
+		activity.game.SelectFromCardDeck(0); 
+		activity.game.PlaySelectedCardAt(0);
+		activity.game.SelectFromCardDeck(0);
+		activity.game.PlaySelectedCardAt(0);
+		activity.game.SelectFromCardDeck(0); 
+		activity.game.PlaySelectedCardSwappedAt(0);
+		activity.game.SelectFromCardDeck(0); 
+		activity.game.PlaySelectedCardAt(0);
+		activity.game.SelectFromCardDeck(0);
+		activity.game.PlaySelectedCardAt(0);
+		activity.game.SelectFromCardDeck(0); 
+		activity.game.PlaySelectedCardSwappedAt(0);
 	}
 
 

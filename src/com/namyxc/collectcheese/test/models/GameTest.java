@@ -142,6 +142,7 @@ public class GameTest {
 		assertEquals(downSide, game.getBoardDeckAt(SELECTED_INDEX).Upside());
 		assertFalse(game.boardDeckHasSelection());
 		assertFalse(game.cardDeckOwnerIsPlayer1());
+		assertEquals(Deck.CARD_DECK_INITIAL_SIZE-1, game.boardDeckSize());
 	}
 	
 	@Test
