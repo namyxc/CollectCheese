@@ -129,7 +129,7 @@ public class GameTest {
 	}
 	
 	@Test
-	public void selectFromBoard0AndFlipIt(){
+	public void selectFromBoard3AndFlipIt(){
 
 		int SELECTED_INDEX = 3;
 		game.InitCardDeck();
@@ -143,6 +143,80 @@ public class GameTest {
 		assertFalse(game.boardDeckHasSelection());
 		assertFalse(game.cardDeckOwnerIsPlayer1());
 		assertEquals(Deck.CARD_DECK_INITIAL_SIZE-1, game.boardDeckSize());
+	}
+	
+	@Test
+	public void selectFromBoard0AndSwapWith1(){
+
+		int SELECTED_INDEX = 0;
+		int SWAP_INDEX = 1;
+		game.InitCardDeck();
+		playAllCardFromDeck();
+		cardType upSideSelected = game.getBoardDeckAt(SELECTED_INDEX).Upside();
+		cardType upSideSwap = game.getBoardDeckAt(SWAP_INDEX).Upside();
+
+		game.selectFromBoard(SELECTED_INDEX);
+		game.swapSelectedWithNext();
+		
+		assertEquals(upSideSwap, game.getBoardDeckAt(SELECTED_INDEX).Upside());
+		assertEquals(upSideSelected, game.getBoardDeckAt(SWAP_INDEX).Upside());
+		assertFalse(game.boardDeckHasSelection());
+		assertFalse(game.cardDeckOwnerIsPlayer1());
+		assertEquals(Deck.CARD_DECK_INITIAL_SIZE, game.boardDeckSize());
+	}
+	
+	@Test
+	public void selectFromBoard0AndMoveToEnd(){
+
+		int SELECTED_INDEX = 0;
+		game.InitCardDeck();
+		playAllCardFromDeck();
+		cardType upSideSelected = game.getBoardDeckAt(SELECTED_INDEX).Upside();
+
+		game.selectFromBoard(SELECTED_INDEX);
+		game.moveSelectedToOtherEnd();
+		
+		assertEquals(upSideSelected, game.getBoardDeckAt(game.boardDeckSize()-1).Upside());
+		assertFalse(game.boardDeckHasSelection());
+		assertFalse(game.cardDeckOwnerIsPlayer1());
+		assertEquals(Deck.CARD_DECK_INITIAL_SIZE, game.boardDeckSize());
+	}
+	
+	@Test
+	public void selectFromBoardLastAndMoveToEnd(){
+
+		int SELECTED_INDEX = Deck.CARD_DECK_INITIAL_SIZE-1;
+		game.InitCardDeck();
+		playAllCardFromDeck();
+		cardType upSideSelected = game.getBoardDeckAt(SELECTED_INDEX).Upside();
+
+		game.selectFromBoard(SELECTED_INDEX);
+		game.moveSelectedToOtherEnd();
+		
+		assertEquals(upSideSelected, game.getBoardDeckAt(0).Upside());
+		assertFalse(game.boardDeckHasSelection());
+		assertFalse(game.cardDeckOwnerIsPlayer1());
+		assertEquals(Deck.CARD_DECK_INITIAL_SIZE, game.boardDeckSize());
+	}
+	
+	@Test
+	public void selectFromBoard1AndSwapWith0(){
+
+		int SELECTED_INDEX = 1;
+		int SWAP_INDEX = 0;
+		game.InitCardDeck();
+		playAllCardFromDeck();
+		cardType upSideSelected = game.getBoardDeckAt(SELECTED_INDEX).Upside();
+		cardType upSideSwap = game.getBoardDeckAt(SWAP_INDEX).Upside();
+
+		game.selectFromBoard(SELECTED_INDEX);
+		game.swapSelectedWithPrev();
+		
+		assertEquals(upSideSwap, game.getBoardDeckAt(SELECTED_INDEX).Upside());
+		assertEquals(upSideSelected, game.getBoardDeckAt(SWAP_INDEX).Upside());
+		assertFalse(game.boardDeckHasSelection());
+		assertFalse(game.cardDeckOwnerIsPlayer1());
+		assertEquals(Deck.CARD_DECK_INITIAL_SIZE, game.boardDeckSize());
 	}
 	
 	@Test
@@ -160,6 +234,8 @@ public class GameTest {
 	}
 
 	private void playAllCardFromDeck() {
+		// R  R  R P1 P1 P2
+		// P1 P2 E P2 E  E
 		game.SelectFromCardDeck(0); 
 		game.PlaySelectedCardAt(0);
 		game.SelectFromCardDeck(0); 
@@ -172,5 +248,7 @@ public class GameTest {
 		game.PlaySelectedCardAt(0);
 		game.SelectFromCardDeck(0); 
 		game.PlaySelectedCardSwappedAt(0);
+		// E  P1 P1 E R  R
+		// P2 E  P2 R P2 P1
 	}
 }
