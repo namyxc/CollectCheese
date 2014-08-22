@@ -1,6 +1,7 @@
 package com.namyxc.collectcheese.models;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 import com.namyxc.collectcheese.vos.SimpleObservable;
 
@@ -126,6 +127,21 @@ public class Deck extends SimpleObservable{
 
 	public void ClearSelection() {
 		selectedIndex = -1;
+	}
+
+	public void swapSelectedWithNext() {
+		Collections.swap(cards, selectedIndex, selectedIndex + 1);
+	}
+
+	public void swapSelectedWithPrev() {
+		Collections.swap(cards, selectedIndex, selectedIndex - 1);
+	}
+
+	public void moveSelectedToOtherEnd() {
+		if (selectedIndex == 0)
+			Collections.rotate(cards, -1);
+		else
+			Collections.rotate(cards, 1);
 	}
 
 }

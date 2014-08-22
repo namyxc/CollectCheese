@@ -29,6 +29,7 @@ public class Game extends SimpleObservable implements OnChangeListener{
 
 	private void PlaySelectedCardAt(int i, Card selectedCard) {
 		boardDeck.PlayCardAt(i, selectedCard);
+		
 		cardDeck.owner().addCurrectScore(boardDeck);
 		cardDeck.owner().collectScoredCards(boardDeck);
 		boardDeck.removeCardsAt(cardDeck.owner().getScoredCardsIndex(boardDeck));
@@ -162,8 +163,12 @@ public class Game extends SimpleObservable implements OnChangeListener{
 
 	public void flipSelectedBoardCard() {
 		boardDeck.SwapSelectedCard();
-		boardDeck.ClearSelection();
 
+		endOfRound();
+	}
+
+	private void endOfRound() {
+		boardDeck.ClearSelection();
 		cardDeck.owner().addCurrectScore(boardDeck);
 		cardDeck.owner().collectScoredCards(boardDeck);
 		boardDeck.removeCardsAt(cardDeck.owner().getScoredCardsIndex(boardDeck));
@@ -177,7 +182,18 @@ public class Game extends SimpleObservable implements OnChangeListener{
 		return boardDeck.SelectedIndex();
 	}
 
-	public int boardDeckSelectedUpsideImage() {
-		return boardDeck.SelectedCard().flipableUpsideImage();
+	public void swapSelectedWithNext() {
+		boardDeck.swapSelectedWithNext();
+		endOfRound();
+	}
+
+	public void swapSelectedWithPrev() {
+		boardDeck.swapSelectedWithPrev();
+		endOfRound();
+	}
+
+	public void moveSelectedToOtherEnd() {
+		boardDeck.moveSelectedToOtherEnd();
+		endOfRound();
 	}
 }

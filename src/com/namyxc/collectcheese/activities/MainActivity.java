@@ -3,6 +3,9 @@ package com.namyxc.collectcheese.activities;
 import java.util.ArrayList;
 
 import android.app.Activity;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.View;
@@ -14,6 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.namyxc.collectcheese.R;
+import com.namyxc.collectcheese.R.drawable;
 import com.namyxc.collectcheese.models.Deck;
 import com.namyxc.collectcheese.models.Game;
 import com.namyxc.collectcheese.vos.OnChangeListener;
@@ -100,9 +104,16 @@ public class MainActivity extends Activity implements OnChangeListener {
 							game.PlaySelectedCardAt(index);
 						else
 							game.PlaySelectedPrivateCardAt(index);
-					} else if (game.boardDeckHasSelection() && game.boardDeckSelectedIndex() == index){
-						game.flipSelectedBoardCard();
-					}else{
+					} else if (game.boardDeckHasSelection()) {
+						if (game.boardDeckSelectedIndex() == game.boardDeckSize() - 1) index--;
+						if (game.boardDeckSelectedIndex() == index) {
+							game.flipSelectedBoardCard();
+						} else if (index - game.boardDeckSelectedIndex() == 1 ) {
+							game.swapSelectedWithNext();
+						} else if (game.boardDeckSelectedIndex() - index == 1) {
+							game.swapSelectedWithPrev();
+						}
+					} else {
 						game.selectFromBoard(index);
 					}
 				}
@@ -239,9 +250,54 @@ public class MainActivity extends Activity implements OnChangeListener {
 				ImageButton boardImageButtonI = (ImageButton) findViewById(10 + i);
 				boardImageButtonI.setEnabled(true);
 			}
-			ImageButton selectedboardImageButtonI = (ImageButton) findViewById(10 + game.boardDeckSelectedIndex());
-			showImageButton(selectedboardImageButtonI, game.boardDeckSelectedUpsideImage());
-		} else if (game.cardDeckSize() == 0 && game.cardDeckOwnerEmptyPrivateCard()) {
+			ImageButton selectedboardImageButtonI = (ImageButton) findViewById(10 + game
+					.boardDeckSelectedIndex());
+			addFlipIcon(selectedboardImageButtonI,
+					game.getBoardDeckAt(game.boardDeckSelectedIndex())
+							.UpsideImage());
+
+			if (game.boardDeckSelectedIndex() < game.boardDeckSize() - 1) {
+				ImageButton selectedboardImageButtonNext = (ImageButton) findViewById(10 + game
+						.boardDeckSelectedIndex() + 1);
+				addSwapIcon(selectedboardImageButtonNext,
+						game.getBoardDeckAt(game.boardDeckSelectedIndex() + 1)
+								.UpsideImage());
+			} else {
+				ImageButton boardImageButtonFirst = (ImageButton) findViewById(10);
+				showImageButton(boardImageButtonFirst, R.drawable.question);
+				for (int i = 1; i < game.boardDeckSize(); i++) {
+					ImageButton boardImageButtonI = (ImageButton) findViewById(10 + i);
+					showImageButton(boardImageButtonI,
+							game.getBoardDeckAt(i - 1).UpsideImage());
+				}
+
+				ImageButton boardImageButtonPrev = (ImageButton) findViewById(10 + game
+						.boardDeckSize() - 1);
+				addSwapIcon(boardImageButtonPrev,
+						game.getBoardDeckAt(game.boardDeckSelectedIndex() - 1)
+								.UpsideImage());
+				ImageButton boardImageButtonSelected = (ImageButton) findViewById(10 + game
+						.boardDeckSize());
+				addFlipIcon(boardImageButtonSelected,
+						game.getBoardDeckAt(game.boardDeckSelectedIndex())
+								.UpsideImage());
+			}
+
+			if (game.boardDeckSelectedIndex() > 0
+					&& game.boardDeckSelectedIndex() != game.boardDeckSize() - 1) {
+				ImageButton selectedboardImageButtonPrev = (ImageButton) findViewById(10 + game
+						.boardDeckSelectedIndex() - 1);
+				addSwapIcon(selectedboardImageButtonPrev,
+						game.getBoardDeckAt(game.boardDeckSelectedIndex() - 1)
+								.UpsideImage());
+			} else if (game.boardDeckSelectedIndex() != game.boardDeckSize() - 1) {
+				ImageButton selectedboardImageButtonPrev = (ImageButton) findViewById(10 + game
+						.boardDeckSize());
+				showImageButton(selectedboardImageButtonPrev,
+						R.drawable.question);
+			}
+		} else if (game.cardDeckSize() == 0
+				&& game.cardDeckOwnerEmptyPrivateCard()) {
 
 			for (int i = 0; i < game.boardDeckSize(); i++) {
 				ImageButton boardImageButtonI = (ImageButton) findViewById(10 + i);
@@ -251,6 +307,26 @@ public class MainActivity extends Activity implements OnChangeListener {
 		}
 
 		UpdateScore();
+	}
+
+	private void addIcon(ImageButton imageButton, int resourceId,
+			int iconResourceId) {
+		Resources r = getResources();
+		Drawable[] layers = new Drawable[2];
+		layers[0] = r.getDrawable(resourceId);
+		layers[1] = r.getDrawable(iconResourceId);
+		LayerDrawable layerDrawable = new LayerDrawable(layers);
+		imageButton.setImageDrawable(layerDrawable);
+		imageButton.setVisibility(View.VISIBLE);
+		imageButton.setEnabled(true);
+	}
+
+	public void addFlipIcon(ImageButton imageButton, int resourceId) {
+		addIcon(imageButton, resourceId, drawable.flip);
+	}
+
+	public void addSwapIcon(ImageButton imageButton, int resourceId) {
+		addIcon(imageButton, resourceId, drawable.swap);
 	}
 
 	private void showImageButton(ImageButton imageButton, int resourceId) {

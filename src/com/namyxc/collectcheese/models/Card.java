@@ -51,21 +51,6 @@ public class Card extends SimpleObservable{
 		}
 	}
 
-	public int flipableUpsideImage() {
-		switch (upside){
-		case Reward:
-			return drawable.cheese_flip;
-		case Player1:
-			return drawable.player1_flip;
-		case Player2:
-			return drawable.player2_flip;
-		case Enemy:
-			return drawable.cat_flip;
-		default:
-			return 0;
-		}
-	}
-
 	public int DownsideImage() {
 		switch (downside){
 		case Reward:
