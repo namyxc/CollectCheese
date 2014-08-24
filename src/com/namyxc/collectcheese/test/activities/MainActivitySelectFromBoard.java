@@ -1,8 +1,8 @@
 package com.namyxc.collectcheese.test.activities;
 
-import static org.junit.Assert.*;
-
-import java.util.ArrayList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,7 +21,6 @@ import com.namyxc.collectcheese.R;
 import com.namyxc.collectcheese.R.drawable;
 import com.namyxc.collectcheese.activities.MainActivity;
 import com.namyxc.collectcheese.models.Deck;
-import com.namyxc.collectcheese.models.Game;
 
 @RunWith(RobolectricTestRunner.class)
 public class MainActivitySelectFromBoard {
@@ -58,10 +57,6 @@ public class MainActivitySelectFromBoard {
 		}
 		
 		boardSelectedImageButton = (ImageButton)activity.findViewById(10 + SELECTED_INDEX);
-		ShadowImageView shadow_boardSelectedImageButton = Robolectric.shadowOf_(boardSelectedImageButton);
-		
-		int downside = activity.game.getBoardDeckAt(SELECTED_INDEX).DownsideImage();
-		
 		boardSelectedImageButton.performClick();
 		
 		for(int i = 0; i < Deck.CARD_DECK_INITIAL_SIZE-1; i++){
@@ -175,6 +170,76 @@ public class MainActivitySelectFromBoard {
 		ShadowImageView shadow_boardSelectedImageButton = Robolectric.shadowOf_(boardSelectedImageButton);
 		
 		assertEquals(selected_image, shadow_boardSelectedImageButton.getImageResourceId());
+		
+		assertFalse(activity.game.boardDeckHasSelection());
+	}
+	
+	@Test
+	public void SelectLastThenOther(){
+
+		int SELECTED_INDEX = 5;
+		playAllCards();
+		
+		ImageButton boardSelectedImageButton = (ImageButton)activity.findViewById(10 + SELECTED_INDEX);
+		boardSelectedImageButton.performClick();
+		
+		int FIRST_INDEX= 1;
+		ImageButton firstAvailableButton = (ImageButton)activity.findViewById(10 + FIRST_INDEX);
+		firstAvailableButton.performClick();
+		
+		ImageButton firstbutton = (ImageButton)activity.findViewById(10 + 0);
+		ShadowImageView ib_firstbutton = Robolectric.shadowOf_(firstbutton);
+		Resources r = activity.getResources();
+		Drawable[] layers = new Drawable[2];
+		layers[0] = r.getDrawable(activity.game.getBoardDeckAt(0).UpsideImage());
+		layers[1] = r.getDrawable(drawable.flip);
+		LayerDrawable layerDrawable = new LayerDrawable(layers);
+
+		assertEquals(layerDrawable, ib_firstbutton.getDrawable());
+		
+
+		ImageButton secondbutton = (ImageButton)activity.findViewById(10 + 1);
+		ShadowImageView ib_secondbutton = Robolectric.shadowOf_(secondbutton);
+		layers = new Drawable[2];
+		layers[0] = r.getDrawable(activity.game.getBoardDeckAt(1).UpsideImage());
+		layers[1] = r.getDrawable(drawable.swap);
+		layerDrawable = new LayerDrawable(layers);
+
+		assertEquals(layerDrawable, ib_secondbutton.getDrawable());
+		
+		for(int i = FIRST_INDEX+1; i < activity.game.boardDeckSize(); i++){
+			ImageButton boardButton = (ImageButton)activity.findViewById(10 + i);
+			ShadowImageView ib_boardButton = Robolectric.shadowOf_(boardButton);
+			assertEquals(ib_boardButton.getImageResourceId(), activity.game.getBoardDeckAt(i).UpsideImage());			
+			assertTrue(boardButton.isEnabled());
+		}
+	}
+	
+	@Test
+	public void SelectLastThenMoveToFirst(){
+
+		int SELECTED_INDEX = 5;
+		playAllCards();
+		
+		ImageButton boardSelectedImageButton = (ImageButton)activity.findViewById(10 + SELECTED_INDEX);
+		int lastImage = activity.game.getBoardDeckAt(SELECTED_INDEX).UpsideImage();
+		boardSelectedImageButton.performClick();
+		
+		int FIRST_INDEX= 0;
+		ImageButton firstAvailableButton = (ImageButton)activity.findViewById(10 + FIRST_INDEX);
+		firstAvailableButton.performClick();
+		
+		ImageButton firstButton = (ImageButton)activity.findViewById(10);
+		ShadowImageView ib_firstButton = Robolectric.shadowOf_(firstButton);
+		assertEquals(lastImage, ib_firstButton.getImageResourceId());	
+		
+		
+		for(int i = 0; i < activity.game.boardDeckSize(); i++){
+			ImageButton boardButton = (ImageButton)activity.findViewById(10 + i);
+			ShadowImageView ib_boardButton = Robolectric.shadowOf_(boardButton);
+			assertEquals(ib_boardButton.getImageResourceId(), activity.game.getBoardDeckAt(i).UpsideImage());			
+			assertTrue(boardButton.isEnabled());
+		}
 		
 		assertFalse(activity.game.boardDeckHasSelection());
 	}
