@@ -112,6 +112,10 @@ public class MainActivity extends Activity implements OnChangeListener {
 							game.swapSelectedWithNext();
 						} else if (game.boardDeckSelectedIndex() - index == 1) {
 							game.swapSelectedWithPrev();
+						}else if (index == -1 || index == game.boardDeckSize()-1){
+							game.moveSelectedToOtherEnd();
+						}else {
+							game.selectFromBoard(index);
 						}
 					} else {
 						game.selectFromBoard(index);
