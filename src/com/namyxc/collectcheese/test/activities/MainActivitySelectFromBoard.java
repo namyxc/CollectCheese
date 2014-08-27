@@ -243,6 +243,34 @@ public class MainActivitySelectFromBoard {
 		
 		assertFalse(activity.game.boardDeckHasSelection());
 	}
+	@Test
+	public void SelectFirstThenMoveToLast(){
+
+		int SELECTED_INDEX = 0;
+		playAllCards();
+		
+		ImageButton boardSelectedImageButton = (ImageButton)activity.findViewById(10 + SELECTED_INDEX);
+		int firstImage = activity.game.getBoardDeckAt(SELECTED_INDEX).UpsideImage();
+		boardSelectedImageButton.performClick();
+		
+		int LAST_INDEX= 6;
+		ImageButton firstAvailableButton = (ImageButton)activity.findViewById(10 + LAST_INDEX);
+		firstAvailableButton.performClick();
+		
+		ImageButton lastButton = (ImageButton)activity.findViewById(10 + LAST_INDEX - 1);
+		ShadowImageView ib_firstButton = Robolectric.shadowOf_(lastButton);
+		assertEquals(firstImage, ib_firstButton.getImageResourceId());	
+		
+		
+		for(int i = 0; i < activity.game.boardDeckSize(); i++){
+			ImageButton boardButton = (ImageButton)activity.findViewById(10 + i);
+			ShadowImageView ib_boardButton = Robolectric.shadowOf_(boardButton);
+			assertEquals(ib_boardButton.getImageResourceId(), activity.game.getBoardDeckAt(i).UpsideImage());			
+			assertTrue(boardButton.isEnabled());
+		}
+		
+		assertFalse(activity.game.boardDeckHasSelection());
+	}
 	
 	
 
