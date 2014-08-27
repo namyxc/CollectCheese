@@ -2,6 +2,7 @@ package com.namyxc.collectcheese.activities;
 
 import java.util.ArrayList;
 
+import android.animation.ObjectAnimator;
 import android.app.Activity;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -11,6 +12,8 @@ import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -84,6 +87,11 @@ public class MainActivity extends Activity implements OnChangeListener {
 			player2Deck.addView(Player2ImageButtonI);
 		}
 	}
+	
+	private void playAnim(View v, int animId){
+		Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(getApplicationContext(), animId);
+		v.startAnimation(hyperspaceJumpAnimation);
+	}
 
 	private void createBoardDeckImageButtons() {
 		for (int i = 0; i < Deck.BOARD_DECK_SIZE; i++) {
@@ -97,7 +105,7 @@ public class MainActivity extends Activity implements OnChangeListener {
 			boardImageButton.setOnClickListener(new OnClickListener() {
 
 				public void onClick(View v) {
-
+					
 					int index = v.getId() - 10;
 					if (game.hasSelection()) {
 						if (game.cardDeckOwnerEmptyPrivateCard())
@@ -107,12 +115,14 @@ public class MainActivity extends Activity implements OnChangeListener {
 					} else if (game.boardDeckHasSelection()) {
 						if (game.boardDeckSelectedIndex() == game.boardDeckSize() - 1) index--;
 						if (game.boardDeckSelectedIndex() == index) {
+							playAnim(v,R.anim.shrink);
 							game.flipSelectedBoardCard();
+							playAnim(v,R.anim.grow);				
 						} else if (index - game.boardDeckSelectedIndex() == 1 ) {
 							game.swapSelectedWithNext();
 						} else if (game.boardDeckSelectedIndex() - index == 1) {
 							game.swapSelectedWithPrev();
-						}else if (index == -1 || index == game.boardDeckSize()-1){
+						}else if (index == -1 || index == game.boardDeckSize()){
 							game.moveSelectedToOtherEnd();
 						}else {
 							game.selectFromBoard(index);
