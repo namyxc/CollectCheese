@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/CollectCheese"/>
+	<classpathentry kind="lib" path="libs/robolectric-2.3-jar-with-dependencies.jar"/>
+	<classpathentry kind="lib" path="/home/berni/Applications/adt-bundle-linux-x86_64-20140702/sdk/platforms/android-7/android.jar"/>
+	<classpathentry kind="lib" path="libs/hamcrest-all-1.3.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
