@@ -8,6 +8,8 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
+import android.transition.ChangeBounds;
+import android.transition.TransitionManager;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -291,7 +293,7 @@ public class MainActivity extends Activity implements OnChangeListener {
 
 	private void ShowAnimations(CardAnimation lastAnimation) {
 		switch (lastAnimation.action) {
-		case Select:
+		case SELECT_FROM_DECK:
 			int viewIdModificatorSelect = lastAnimation.player == game.player1 ? 0 : 20;
 			for (int i = 0; i < game.cardDeckSize(); i++) {
 				ImageButton PlayerImageButtonI = (ImageButton) findViewById(i
@@ -363,8 +365,78 @@ public class MainActivity extends Activity implements OnChangeListener {
 				showImageButton(boardImageButton, R.drawable.question);
 			}}
 			break;
+		case SELECT_FROM_BOARD:
 
-		case Play:
+			ImageButton boardImageButton = new ImageButton(this);
+			boardImageButton.setId(10 + game.boardDeckSize());
+			boardImageButton.setVisibility(View.VISIBLE);
+			boardImageButton.setScaleType(ImageView.ScaleType.FIT_CENTER);
+			boardImageButton.setLayoutParams(new LinearLayout.LayoutParams(
+					(int) getResources().getDimension(R.dimen.card_width), LinearLayout.LayoutParams.MATCH_PARENT));
+			boardImageButton.setOnClickListener(new OnClickListener() {
+
+				public void onClick(View v) {
+
+					int index = v.getId() - 10;
+					if (game.hasSelection()) {
+						if (game.cardDeckOwnerEmptyPrivateCard())
+							game.PlaySelectedCardAt(index);
+						else
+							game.PlaySelectedPrivateCardAt(index);
+					} else if (game.boardDeckHasSelection()) {
+						if (game.boardDeckSelectedIndex() == game
+								.boardDeckSize() - 1)
+							index--;
+						if (game.boardDeckSelectedIndex() == index) {
+							playAnim(v, R.anim.shrink);
+							game.flipSelectedBoardCard();
+							playAnim(v, R.anim.grow);
+						} else if (index - game.boardDeckSelectedIndex() == 1) {
+							game.swapSelectedWithNext();
+						} else if (game.boardDeckSelectedIndex() - index == 1) {
+							game.swapSelectedWithPrev();
+						} else if (index == -1
+								|| index == game.boardDeckSize()) {
+							game.moveSelectedToOtherEnd();
+						} else {
+							game.selectFromBoard(index);
+						}
+					} else {
+						game.selectFromBoard(index);
+					}
+				}
+			});
+			boardImageButton
+					.setOnLongClickListener(new OnLongClickListener() {
+
+						public boolean onLongClick(View v) {
+							int index = v.getId() - 10;
+							if (game.cardDeckOwnerEmptyPrivateCard())
+								game.PlaySelectedCardSwappedAt(index);
+							else
+								game.PlaySelectedPrivateCardSwappedAt(index);
+							return true;
+						}
+					});
+
+			boardDeck.addView(boardImageButton);
+
+			showImageButton(boardImageButton, R.drawable.question);
+			
+			break;
+		case PLAY_FROM_BOARD_TO_END:
+			if (lastAnimation.index == 0){
+				boardDeck.removeViewAt(1);
+				boardDeck.removeViewAt(0);
+				int lastIndex = boardDeck.getChildCount()-1;
+				ImageButton lastImage = (ImageButton)boardDeck.getChildAt(lastIndex);
+				lastImage.setImageResource(game.getBoardDeckAt(lastIndex).UpsideImage());
+				lastImage.setTag(game.getBoardDeckAt(lastIndex).UpsideImage());
+			}
+			reNumberBoardDeck();
+			break;
+
+		case PLAY:
 			int viewIdModificatorPlay = lastAnimation.player == game.player1 ? 20 : 0;
 				player1Deck.removeAllViews();
 				player2Deck.removeAllViews();
@@ -431,6 +503,13 @@ public class MainActivity extends Activity implements OnChangeListener {
 						lastAnimation.index).UpsideImage());
 				removeQuestionMarks();
 				reNumberBoardDeck();
+				
+				if (game.cardDeckSize() == 0 && game.cardDeckOwnerEmptyPrivateCard()) {
+					for (int i = 0; i < game.boardDeckSize(); i++) { 
+						ImageButton boardImageButtonI = (ImageButton) findViewById(10 + i);
+						boardImageButtonI.setEnabled(true); 
+					}
+				}
 			break;
 		default:
 			break;
