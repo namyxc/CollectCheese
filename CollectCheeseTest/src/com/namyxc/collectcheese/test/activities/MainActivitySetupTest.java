@@ -2,6 +2,7 @@ package com.namyxc.collectcheese.test.activities;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Before;
@@ -41,12 +42,10 @@ public class MainActivitySetupTest {
 	}
 	
 	@Test
-	public void BoardDeckIsInvisible(){
-		for(int i = 0; i < Deck.BOARD_DECK_SIZE; i++){
-			ImageButton boardImageButton = (ImageButton)activity.findViewById(10 + i);
-			assertNotNull(boardImageButton);		
-			assertEquals(View.INVISIBLE, boardImageButton.getVisibility());
-		}	
+	public void BoardDeckIsEmpty(){
+		for(int i = 0; i <= 9; i++){
+			assertNull(activity.findViewById(10 + i));
+		}
 	}
 
 }

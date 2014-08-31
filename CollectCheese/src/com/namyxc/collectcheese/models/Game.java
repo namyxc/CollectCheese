@@ -8,11 +8,13 @@ import com.namyxc.collectcheese.vos.SimpleObservable;
 
 public class Game extends SimpleObservable implements OnChangeListener{
 
+	public enum CardActions{Select, Play};
 	
 	public Player player1;
 	public Player player2;
 	private Deck boardDeck;
 	private Deck cardDeck;
+	private ArrayList<CardAnimation> CardAnimations;
 
 	public Game(){
 		player1 = new Player(cardType.Player1, new Scorer(cardType.Player1, cardType.Player2));
@@ -20,6 +22,7 @@ public class Game extends SimpleObservable implements OnChangeListener{
 		boardDeck = new Deck();
 		cardDeck = new Deck(player1);
 		cardDeck.addListener(this);
+		CardAnimations = new ArrayList<CardAnimation>();
 	}
 
 	public void PlaySelectedCardAt(int i) {
@@ -29,6 +32,7 @@ public class Game extends SimpleObservable implements OnChangeListener{
 
 	private void PlaySelectedCardAt(int i, Card selectedCard) {
 		boardDeck.PlayCardAt(i, selectedCard);
+		CardAnimations.add(new CardAnimation(CardActions.Play, i, cardDeck.owner()));
 		
 		cardDeck.owner().addCurrectScore(boardDeck);
 		cardDeck.owner().collectScoredCards(boardDeck);
@@ -37,7 +41,6 @@ public class Game extends SimpleObservable implements OnChangeListener{
 		SwapCardDeck();
 		cardDeck.ClearSelection();
 		boardDeck.ClearSelection();
-		//if (cardDeckSize() == 0 && !cardDeck.owner().hasPrivateDeck()) currentPhase = gamePhase.PLAY_FROM_BOARD;
 		notifyObservers(this);
 	}
 
@@ -73,6 +76,7 @@ public class Game extends SimpleObservable implements OnChangeListener{
 
 	public void SelectFromCardDeck(int i) {
 		cardDeck.Select(i);
+		CardAnimations.add(new CardAnimation(CardActions.Select,i,cardDeck.owner()));
 		notifyObservers(this);
 	}
 
@@ -195,5 +199,10 @@ public class Game extends SimpleObservable implements OnChangeListener{
 	public void moveSelectedToOtherEnd() {
 		boardDeck.moveSelectedToOtherEnd();
 		endOfRound();
+	}
+
+	public CardAnimation getLastAnimations() {
+		// TODO Auto-generated method stub
+		return CardAnimations.get(CardAnimations.size()-1);
 	}
 }

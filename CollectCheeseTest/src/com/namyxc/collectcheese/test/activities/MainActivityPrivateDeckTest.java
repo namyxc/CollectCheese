@@ -44,19 +44,13 @@ public class MainActivityPrivateDeckTest {
 		activity.game.PlaySelectedCardSwappedAt(0);
 		
 		
-		for(int i = 0; i < Deck.CARD_DECK_INITIAL_SIZE; i++){
+		for(int i = 0; i < activity.game.player1.getPrivateDeck().size(); i++){
 			ImageButton player1ImageButton = (ImageButton)activity.findViewById(i);
-			if (i < activity.game.player1.getPrivateDeck().size()){
-
 				ShadowImageView ib_player1ImageButton = Robolectric.shadowOf_(player1ImageButton);
 				assertTrue(player1ImageButton.isEnabled());
 				assertEquals(View.VISIBLE, player1ImageButton.getVisibility());
 				assertEquals(activity.game.player1.getPrivateDeck().get(i).UpsideImage(), ib_player1ImageButton.getImageResourceId());
-			}
-			else{
-				assertFalse(player1ImageButton.isEnabled());
-				assertEquals(View.INVISIBLE, player1ImageButton.getVisibility());
-			}
+			
 		}
 		activity.game.SelectFromPrivateDeck(0);
 		activity.game.PlaySelectedPrivateCardSwappedAt(0);
