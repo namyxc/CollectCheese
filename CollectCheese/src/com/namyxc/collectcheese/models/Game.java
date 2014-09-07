@@ -8,7 +8,7 @@ import com.namyxc.collectcheese.vos.SimpleObservable;
 
 public class Game extends SimpleObservable implements OnChangeListener{
 
-	public enum CardActions{SELECT_FROM_DECK, PLAY, SELECT_FROM_BOARD, PLAY_FROM_BOARD_TO_END};
+	public enum CardActions{SELECT_FROM_DECK, PLAY, SELECT_FROM_BOARD, PLAY_FROM_BOARD_TO_END, FLIP_CARD, SWAP_WITH_NEXT, SWAP_WITH_PREV};
 	
 	public Player player1;
 	public Player player2;
@@ -32,11 +32,11 @@ public class Game extends SimpleObservable implements OnChangeListener{
 
 	private void PlaySelectedCardAt(int i, Card selectedCard) {
 		boardDeck.PlayCardAt(i, selectedCard);
-		CardAnimations.add(new CardAnimation(CardActions.PLAY, i, cardDeck.owner()));
 		
 		cardDeck.owner().addCurrectScore(boardDeck);
 		cardDeck.owner().collectScoredCards(boardDeck);
 		boardDeck.removeCardsAt(cardDeck.owner().getScoredCardsIndex(boardDeck));
+		CardAnimations.add(new CardAnimation(CardActions.PLAY, i, cardDeck.owner(), cardDeck.owner().getScoredCardsIndex(boardDeck)));
 		cardDeck.removeSelectedCard();
 		SwapCardDeck();
 		cardDeck.ClearSelection();
@@ -76,7 +76,7 @@ public class Game extends SimpleObservable implements OnChangeListener{
 
 	public void SelectFromCardDeck(int i) {
 		cardDeck.Select(i);
-		CardAnimations.add(new CardAnimation(CardActions.SELECT_FROM_DECK,i,cardDeck.owner()));
+		CardAnimations.add(new CardAnimation(CardActions.SELECT_FROM_DECK,i,cardDeck.owner(), null));
 		notifyObservers(this);
 	}
 
@@ -154,7 +154,7 @@ public class Game extends SimpleObservable implements OnChangeListener{
 
 	public void selectFromBoard(int i) {
 		boardDeck.Select(i);
-		CardAnimations.add(new CardAnimation(CardActions.SELECT_FROM_BOARD,i,cardDeck.owner()));
+		CardAnimations.add(new CardAnimation(CardActions.SELECT_FROM_BOARD,i,cardDeck.owner(), null));
 		notifyObservers(this);
 	}
 
@@ -167,8 +167,9 @@ public class Game extends SimpleObservable implements OnChangeListener{
 	}
 
 	public void flipSelectedBoardCard() {
+		CardAnimations.add(new CardAnimation(CardActions.FLIP_CARD,boardDeck.SelectedIndex(),cardDeck.owner(), null));
+		
 		boardDeck.SwapSelectedCard();
-
 		endOfRound();
 	}
 
@@ -177,7 +178,7 @@ public class Game extends SimpleObservable implements OnChangeListener{
 		cardDeck.owner().addCurrectScore(boardDeck);
 		cardDeck.owner().collectScoredCards(boardDeck);
 		boardDeck.removeCardsAt(cardDeck.owner().getScoredCardsIndex(boardDeck));
-		
+		CardAnimations.get(CardAnimations.size()-1).mustRemove = cardDeck.owner().getScoredCardsIndex(boardDeck);
 		SwapCardDeck();
 		
 		notifyObservers(this);
@@ -188,17 +189,19 @@ public class Game extends SimpleObservable implements OnChangeListener{
 	}
 
 	public void swapSelectedWithNext() {
+		CardAnimations.add(new CardAnimation(CardActions.SWAP_WITH_NEXT,boardDeck.SelectedIndex(),cardDeck.owner(), null));
 		boardDeck.swapSelectedWithNext();
 		endOfRound();
 	}
 
 	public void swapSelectedWithPrev() {
+		CardAnimations.add(new CardAnimation(CardActions.SWAP_WITH_PREV,boardDeck.SelectedIndex(),cardDeck.owner(), null));
 		boardDeck.swapSelectedWithPrev();
 		endOfRound();
 	}
 
 	public void moveSelectedToOtherEnd() {
-		CardAnimations.add(new CardAnimation(CardActions.PLAY_FROM_BOARD_TO_END,boardDeck.SelectedIndex(),cardDeck.owner()));
+		CardAnimations.add(new CardAnimation(CardActions.PLAY_FROM_BOARD_TO_END,boardDeck.SelectedIndex(),cardDeck.owner(), null));
 		boardDeck.moveSelectedToOtherEnd();
 		endOfRound();
 	}

@@ -48,7 +48,6 @@ public class MainActivitySelectFromBoard {
 		}
 		ImageButton boardSelectedImageButton = (ImageButton)activity.findViewById(10 + SELECTED_INDEX);
 		boardSelectedImageButton.performClick();
-		activity.game.selectFromBoard(SELECTED_INDEX); 
 		assertTrue(activity.game.boardDeckHasSelection());
 		for(int i = 0; i < Deck.CARD_DECK_INITIAL_SIZE; i++){
 			ImageButton boardImageButton = (ImageButton)activity.findViewById(10 + i);
