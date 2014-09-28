@@ -207,7 +207,15 @@ public class Game extends SimpleObservable implements OnChangeListener{
 	}
 
 	public CardAnimation getLastAnimations() {
-		// TODO Auto-generated method stub
 		return CardAnimations.get(CardAnimations.size()-1);
+	}
+
+	public CardAnimation getPreviousAnimations() {
+		return CardAnimations.get(CardAnimations.size()-2);
+	}
+
+	public boolean currentPlayerReSelectFromBoard() {
+		return CardAnimations.size()>2
+				&& getLastAnimations().player == getPreviousAnimations().player;
 	}
 }

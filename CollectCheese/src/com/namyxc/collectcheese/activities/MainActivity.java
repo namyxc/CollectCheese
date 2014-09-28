@@ -366,6 +366,26 @@ public class MainActivity extends Activity implements OnChangeListener {
 			}}
 			break;
 		case SELECT_FROM_BOARD:
+			if (game.currentPlayerReSelectFromBoard()){
+				CardAnimation ca = game.getPreviousAnimations();
+				int fixedIndex = ca.index == game.boardDeckSize()-1 ? ca.index + 1 : ca.index;
+				ImageButton lastSelectedBoardImage = (ImageButton)boardDeck.getChildAt(fixedIndex);
+				lastSelectedBoardImage.setImageResource(game.getBoardDeckAt(ca.index).UpsideImage());
+				if (ca.index  < game.boardDeckSize()-1){
+					ImageButton nextBoardImage = (ImageButton)boardDeck.getChildAt(ca.index + 1);
+					nextBoardImage.setImageResource(game.getBoardDeckAt(ca.index + 1).UpsideImage());
+				}
+				if (ca.index > 0){
+					ImageButton nextBoardImage = (ImageButton)boardDeck.getChildAt(fixedIndex - 1);
+					nextBoardImage.setImageResource(game.getBoardDeckAt(ca.index - 1).UpsideImage());
+				}
+				if (ca.index == game.boardDeckSize()-1){
+					boardDeck.removeViewAt(0);
+				}
+				if (ca.index == 0){
+					boardDeck.removeViewAt(boardDeck.getChildCount()-1);
+				}
+			}
 
 			ImageButton selectedBoardImage = (ImageButton)boardDeck.getChildAt(lastAnimation.index);
 			addFlipIcon(selectedBoardImage,game.getBoardDeckAt(game.boardDeckSelectedIndex()) .UpsideImage());
