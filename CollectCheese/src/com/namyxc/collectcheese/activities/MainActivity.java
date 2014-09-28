@@ -517,20 +517,24 @@ public class MainActivity extends Activity implements OnChangeListener {
 			reNumberBoardDeck();
 			break;
 		case PLAY_FROM_BOARD_TO_END:
+			int lastIndex = boardDeck.getChildCount()-2;
 			if (lastAnimation.index == 0){
 				boardDeck.removeViewAt(0);
-				int lastIndex = boardDeck.getChildCount()-1;
 				ImageButton lastImage = (ImageButton)boardDeck.getChildAt(lastIndex);
 				lastImage.setImageResource(game.getBoardDeckAt(lastIndex).UpsideImage());
 				lastImage.setTag(game.getBoardDeckAt(lastIndex).UpsideImage());
 			}else{
-				boardDeck.removeViewAt(boardDeck.getChildCount()-1);				
+				boardDeck.removeViewAt(boardDeck.getChildCount()-1);
+
+				ImageButton lastImage = (ImageButton)boardDeck.getChildAt(lastIndex);
+				lastImage.setImageResource(game.getBoardDeckAt(lastIndex).UpsideImage());
+				lastImage.setTag(game.getBoardDeckAt(lastIndex).UpsideImage());
 				
-				ImageButton firstImage = (ImageButton)boardDeck.getChildAt(0);
-				firstImage.setImageResource(game.getBoardDeckAt(0).UpsideImage());
-				firstImage.setTag(game.getBoardDeckAt(0).UpsideImage());
 				
 			}
+			ImageButton firstImage = (ImageButton)boardDeck.getChildAt(0);
+			firstImage.setImageResource(game.getBoardDeckAt(0).UpsideImage());
+			firstImage.setTag(game.getBoardDeckAt(0).UpsideImage());
 			reNumberBoardDeck();
 			break;
 
